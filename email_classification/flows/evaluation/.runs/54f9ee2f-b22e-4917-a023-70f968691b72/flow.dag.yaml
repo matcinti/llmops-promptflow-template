@@ -1,0 +1,46 @@
+inputs:
+  entities:
+    type: list
+    default:
+    - software engineer
+    - CEO
+    is_chat_input: false
+  ground_truth:
+    type: string
+    default: '"CEO, Software Engineer, Finance Manager"'
+    is_chat_input: false
+outputs:
+  match_cnt:
+    type: object
+    reference: ${match.output}
+nodes:
+- name: cleansing
+  type: python
+  source:
+    type: code
+    path: cleansing.py
+  inputs:
+    entities_str: ${inputs.ground_truth}
+  use_variants: false
+- name: match
+  type: python
+  source:
+    type: code
+    path: match.py
+  inputs:
+    answer: ${inputs.entities}
+    ground_truth: ${cleansing.output}
+  use_variants: false
+- name: log_metrics
+  type: python
+  source:
+    type: code
+    path: log_metrics.py
+  inputs:
+    match_counts: ${match.output}
+  aggregation: true
+  use_variants: false
+node_variants: {}
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
