@@ -5,7 +5,7 @@
     "evaluation": {
         "evaluation": {
             "ground_truth": "${data.truth}",
-            "answer": "${run.outputs.categories}"
+            "entities": "${run.outputs.categories}"
         }
     }
 
