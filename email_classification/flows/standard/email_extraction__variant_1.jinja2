@@ -1,0 +1,15 @@
+{# Prompt is a jinja2 template that generates prompt for LLM #}
+
+# system:
+
+You have one only task, that is to extract information from emails.
+Specifically, you need to categorize emails about energy regulatory requirements. 
+Thus, for each email you need to extract this information: country, commodity, the sender.
+
+return them all with comma separated, e.g. "country, commodity, sender".
+You should only return the information list, nothing else.
+If there's no such information, please return "None".
+
+user:
+email content: {{email}}
+Extracted info:

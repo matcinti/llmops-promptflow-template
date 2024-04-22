@@ -1,0 +1,65 @@
+id: template_standard_flow
+name: Template Standard Flow
+inputs:
+  email:
+    type: string
+    is_chat_input: false
+outputs:
+  categories:
+    type: string
+    reference: ${cleansing.output}
+nodes:
+- name: cleansing
+  type: python
+  source:
+    type: code
+    path: echo.py
+  inputs:
+    categories_str: ${email_extraction.output}
+  use_variants: false
+- name: email_extraction
+  use_variants: true
+node_variants:
+  email_extraction:
+    default_variant_id: variant_0
+    variants:
+      variant_0:
+        node:
+          name: email_extraction
+          type: llm
+          source:
+            type: code
+            path: joke.jinja2
+          inputs:
+            deployment_name: gpt-35-turbo-16k-genaiacceleratorsharedprodaxso0001
+            temperature: 1
+            top_p: 1
+            max_tokens: 800
+            presence_penalty: 0
+            frequency_penalty: 0
+            email: ${inputs.email}
+          provider: AzureOpenAI
+          connection: aoai
+          api: chat
+          module: promptflow.tools.aoai
+      variant_1:
+        node:
+          name: email_extraction
+          type: llm
+          source:
+            type: code
+            path: email_extraction__variant_1.jinja2
+          inputs:
+            deployment_name: gpt-4-genaiacceleratorsharedprodaxso0001
+            temperature: 1
+            top_p: 1
+            max_tokens: 800
+            presence_penalty: 0
+            frequency_penalty: 0
+            email: ${inputs.email}
+          provider: AzureOpenAI
+          connection: aoai
+          api: chat
+          module: promptflow.tools.aoai
+environment:
+  python_requirements_txt: requirements.txt
